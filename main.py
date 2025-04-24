@@ -38,7 +38,8 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--window-size=1920x1080")
 
-driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+from selenium.webdriver.chrome.service import Service
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 driver.get("https://www.linkedin.com")
 driver.add_cookie({"name": "li_at", "value": li_at, "domain": ".linkedin.com"})
 driver.get(linkedin_url)
