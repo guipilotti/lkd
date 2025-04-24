@@ -1,4 +1,3 @@
-
 import time
 import os
 import gspread
@@ -7,6 +6,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 import json
 
@@ -32,19 +32,24 @@ spreadsheet_name = "Linkedin_Assistant"
 sheet_name = "PostsFeed"
 linkedin_url = "https://www.linkedin.com/search/results/content/?keywords=intelig%C3%AAncia%20artificial%20OR%20produto%20OR%20tecnologia&network=%5B%22F%22%5D&sortBy=%22date_posted%22"
 
+# Configuração headless para ambiente do Render
 options = Options()
+options.binary_location = "/opt/render/project/.render/chrome/opt/google/chrome/chrome"
 options.add_argument("--headless=new")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
-options.add_argument("--window-size=1920x1080")
+options.add_argument("--disable-gpu")
+options.add_argument("--no-zygote")
+options.add_argument("--remote-debugging-port=9222")
+options.add_argument("--window-size=1920,1080")
 
-from selenium.webdriver.chrome.service import Service
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 driver.get("https://www.linkedin.com")
 driver.add_cookie({"name": "li_at", "value": li_at, "domain": ".linkedin.com"})
 driver.get(linkedin_url)
 time.sleep(5)
 
+# Scroll para carregar mais conteúdo
 for _ in range(3):
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(3)
